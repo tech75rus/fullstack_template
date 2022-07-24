@@ -6,6 +6,6 @@ RUN yarn global add @vue/cli
 
 WORKDIR /var/www/admin
 
-CMD [ "http-server", "dist" ]
+CMD [ "yarn", "serve" ]
 
 
