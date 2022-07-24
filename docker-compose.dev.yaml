@@ -3,29 +3,25 @@ version: '3.9'
 services:
   nginx:
     build:
-      context: ./docker/nginx/prod
+      context: ./docker/nginx/dev
     ports:
       - 80:80
-      - 443:443
     volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
       - ./api:/var/www/api
-      - ./app:/var/www/app
-      - ./admin:/var/www/admin
     depends_on:
       - api
     restart: always
-    container_name: prod_fullstack_nginx
+    container_name: dev_fullstack_nginx
   
   api:
     build:
-      context: ./docker/api/prod
+      context: ./docker/api/dev
     volumes:
       - ./api:/var/www/api
     restart: always
     depends_on:
       - db
-    container_name: prod_fullstack_api
+    container_name: dev_fullstack_api
 
   db:
     image: mysql
@@ -38,28 +34,32 @@ services:
       MYSQL_DATABASE: gladkix
       MYSQL_USER: gladkix
       MYSQL_PASSWORD: 123456
-    container_name: prod_fullstack_db
+    container_name: dev_fullstack_db
 
   app:
     build:
-      context: ./docker/app/prod
+      context: ./docker/app/dev
     volumes:
       - ./app:/var/www/app
+    ports:
+      - 7777:8080
     restart: always
     depends_on:
       - nginx
-    container_name: prod_fullstack_app
-
+    container_name: dev_fullstack_app
 
   admin:
     build:
-      context: ./docker/admin/prod
+      context: ./docker/admin/dev
     volumes:
       - ./admin:/var/www/admin
+    ports:
+      - 7778:8080
     restart: always
     depends_on:
       - nginx
-        container_name: prod_fullstack_admin
+    container_name: dev_fullstack_admin
 
 volumes:
   mysql:
+
