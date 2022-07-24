@@ -59,7 +59,7 @@ services:
     restart: always
     depends_on:
       - nginx
-        container_name: prod_fullstack_admin
+    container_name: prod_fullstack_admin
 
 volumes:
   mysql:
