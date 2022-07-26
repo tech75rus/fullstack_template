@@ -38,27 +38,35 @@ services:
 
   app:
     build:
-      context: ./docker/app/dev
+      context: ./
+      dockerfile: ./docker/app/dev/Dockerfile
     volumes:
       - ./app:/var/www/app
+      - ./docker/app/dev/install.sh:/var/www/install.sh
     ports:
       - 7777:8080
     restart: always
     depends_on:
       - nginx
+    working_dir: /var/www/app
     container_name: dev_fullstack_app
+    entrypoint: ["/bin/sh", "/var/www/install.sh"]
 
   admin:
     build:
-      context: ./docker/admin/dev
+      context: ./
+      dockerfile: ./docker/admin/dev/Dockerfile
     volumes:
       - ./admin:/var/www/admin
+      - ./docker/admin/dev/install.sh:/var/www/install.sh:ro
     ports:
       - 7778:8080
     restart: always
     depends_on:
       - nginx
+    working_dir: /var/www/admin
     container_name: dev_fullstack_admin
+    entrypoint: ["/bin/sh", "/var/www/install.sh"]
 
 volumes:
   mysql:
