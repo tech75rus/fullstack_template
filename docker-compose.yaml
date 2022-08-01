@@ -3,7 +3,9 @@ version: '3.9'
 services:
   nginx:
     build:
-      context: ./docker/nginx/prod
+      context: ./
+      dockerfile: ./docker/nginx/prod/Dockerfile
+    image: fullstack_template_nginx_prod
     ports:
       - 80:80
       - 443:443
@@ -15,51 +17,64 @@ services:
     depends_on:
       - api
     restart: always
-    container_name: prod_fullstack_nginx
+    container_name: fullstack_template_nginx_prod
   
   api:
     build:
-      context: ./docker/api/prod
+      context: ./
+      dockerfile: ./docker/api/prod/Dockerfile
+    image: fullstack_template_api_prod
     volumes:
       - ./api:/var/www/api
     restart: always
     depends_on:
       - db
-    container_name: prod_fullstack_api
+    container_name: fullstack_template_api_prod
+    working_dir: /var/www/api
+    user: "1000:1000"
 
   db:
-    image: mysql
+    build:
+      context: ./
+      dockerfile: ./docker/db/prod/Dockerfile
+    image: fullstack_template_db_prod
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     volumes:
-      - mysql:/var/lib/mysql
+      - /var/www/db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: gladkix
       MYSQL_USER: gladkix
       MYSQL_PASSWORD: 123456
-    container_name: prod_fullstack_db
+    container_name: fullstack_template_db_prod
 
   app:
     build:
-      context: ./docker/app/prod
+      context: ./
+      dockerfile: ./docker/app/prod/Dockerfile
+    image: fullstack_template_app_prod
     volumes:
       - ./app:/var/www/app
-    restart: always
+      - ./docker/app/prod/install.sh:/var/www/install.sh
     depends_on:
       - nginx
-    container_name: prod_fullstack_app
-
+    container_name: fullstack_template_app_prod
+    working_dir: /var/www/app
+    entrypoint: ["/bin/sh", "/var/www/install.sh"]
+    user: "1000:1000"
 
   admin:
     build:
-      context: ./docker/admin/prod
+      context: ./
+      dockerfile: ./docker/admin/prod/Dockerfile
+    image: fullstack_template_admin_prod
     volumes:
       - ./admin:/var/www/admin
-    restart: always
+      - ./docker/admin/prod/install.sh:/var/www/install.sh
     depends_on:
       - nginx
-    container_name: prod_fullstack_admin
-
-volumes:
-  mysql:
+    container_name: fullstack_template_admin_prod
+    working_dir: /var/www/admin
+    entrypoint: ["/bin/sh", "/var/www/install.sh"]
+    user: "1000:1000"
