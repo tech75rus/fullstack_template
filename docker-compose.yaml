@@ -74,7 +74,7 @@ services:
       - ./admin:/var/www/admin
       - ./docker/admin/prod/install.sh:/var/www/install.sh
     depends_on:
-      - nginx
+      - app
     container_name: fullstack_template_admin_prod
     working_dir: /var/www/admin
     entrypoint: ["/bin/sh", "/var/www/install.sh"]
