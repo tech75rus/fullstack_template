@@ -26,12 +26,13 @@ services:
     image: fullstack_template_api_prod
     volumes:
       - ./api:/var/www/api
+      - ./docker/api/prod/install.sh:/var/www/install.sh
     restart: always
     depends_on:
       - db
     container_name: fullstack_template_api_prod
     working_dir: /var/www/api
-    user: "1000:1000"
+    entrypoint: ["/bin/sh", "/var/www/install.sh"]
 
   db:
     build:
@@ -73,7 +74,7 @@ services:
       - ./admin:/var/www/admin
       - ./docker/admin/prod/install.sh:/var/www/install.sh
     depends_on:
-      - nginx
+      - app
     container_name: fullstack_template_admin_prod
     working_dir: /var/www/admin
     entrypoint: ["/bin/sh", "/var/www/install.sh"]
